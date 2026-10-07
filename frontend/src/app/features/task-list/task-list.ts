@@ -29,14 +29,29 @@ export class TaskList {
 
   private load(): void {
     this.loading.set(true);
-
-    this.taskService.getAll().subscribe((tasks) => {
-      this.tasks.set(tasks);
-      this.loading.set(false);
+    this.errorMessage.set('');
+    this.taskService.getAll().subscribe({
+      next: (tasks) => { 
+        this.tasks.set(tasks);
+        this.loading.set(false);
+      },
+      error: () => { 
+        this.loading.set(false);
+        this.errorMessage.set('Error al cargar las tareas.');
+      },
     });
 
-    this.userService.getAll().subscribe((users) => {
-      this.users.set(users);
+    
+
+    this.userService.getAll().subscribe({
+      next: (users) => {
+        this.users.set(users);
+      },
+      error: () => {
+      if (!this.errorMessage()) {
+        this.errorMessage.set('Error al cargar los usuarios.');
+      }
+    },
     });
   }
 

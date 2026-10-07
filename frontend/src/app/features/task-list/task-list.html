@@ -10,6 +10,12 @@
     </a>
   </div>
 
+  @if (errorMessage()) {
+    <div class="alert alert-danger" role="alert">
+      {{ errorMessage() }}
+    </div>
+  }
+
   @if (successMessage()) {
     <div class="alert alert-success" role="alert">
       {{ successMessage() }}
@@ -18,9 +24,9 @@
 
   @if (loading()) {
     <p>Cargando...</p>
-  } @else if (tasks().length === 0) {
+  } @else if (tasks().length === 0 && !errorMessage()) {
     <p class="text-muted">No hay tareas todavía.</p>
-  } @else {
+  } @else if (tasks().length > 0) {
     <table class="table table-hover align-middle">
       <thead>
         <tr>
