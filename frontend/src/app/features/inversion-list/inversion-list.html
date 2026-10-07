@@ -1,0 +1,41 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Inversiones del usuario {{ userId }}</h1>
+    <a [routerLink]="['/users', userId, 'inversiones', 'new']" class="btn btn-primary">
+      + Nueva inversión
+    </a>
+  </div>
+
+  @if (loading()) {
+    <p>Cargando...</p>
+  } @else if (error()) {
+    <p class="text-danger">{{ error() }}</p>
+  } @else if (inversiones().length === 0) {
+    <p class="text-muted">Este usuario no tiene inversiones todavía.</p>
+  } @else {
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Monto</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (inversion of inversiones(); track inversion.id) {
+          <tr>
+            <td>{{ inversion.tipo }}</td>
+            <td>{{ inversion.monto | number: '1.0-2' }}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteInversion(inversion.id)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  <a routerLink="/inversiones" class="btn btn-link ps-0">← Buscar otro usuario</a>
+</div>

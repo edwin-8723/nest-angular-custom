@@ -1,0 +1,98 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Mis tareas</h1>
+
+    <a
+      routerLink='/tasks/new'
+      class="btn btn-primary"
+    >
+      + Nueva tarea
+    </a>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert alert-success" role="alert">
+      {{ successMessage() }}
+    </div>
+  }
+
+  @if (loading()) {
+    <p>Cargando...</p>
+  } @else if (tasks().length === 0) {
+    <p class="text-muted">No hay tareas todavía.</p>
+  } @else {
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Hecha</th>
+          <th>Título</th>
+          <th>Descripción</th>
+          <th>Asignado A</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (task of tasks(); track task.id) {
+          <tr>
+            <td>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [checked]="task.completed"
+                (change)="toggleCompleted(task)"
+              />
+            </td>
+
+            <td
+              [class.text-decoration-line-through]="task.completed"
+            >
+              {{ task.title }}
+            </td>
+
+            <td
+              [class.text-decoration-line-through]="task.completed"
+            >
+              {{ task.description }}
+            </td>
+
+            <td>
+              <select
+                #selUser
+                class="form-select"
+                (change)="assignUser(task, selUser.value)"
+              >
+                <option value="" [selected]="task.userId === null">
+                  Sin asignar
+                </option>
+
+                @for (user of users(); track user.id) {
+                  <option [value]="user.id" [selected]="user.id === task.userId">
+                    {{ user.name }}
+                  </option>
+                }
+              </select>
+            </td>
+
+            <td class="d-flex gap-2">
+              <a
+                [routerLink]="['/tasks', task.id, 'edit']"
+                class="btn btn-sm btn-outline-secondary"
+              >
+                Editar
+              </a>
+
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                (click)="deleteTask(task.id)"
+              >
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
