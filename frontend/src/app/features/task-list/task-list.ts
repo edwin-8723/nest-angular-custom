@@ -55,21 +55,47 @@ export class TaskList {
     });
   }
 
-  protected toggleCompleted(task: Task): void {
-    this.taskService
-      .update(task.id, { completed: !task.completed })
-      .subscribe((updated) => {
+  protected toggleCompleted(task: Task, checkbox: HTMLInputElement): void {
+    this.taskService.update(task.id, { completed: !task.completed }).subscribe({
+      next: (updated) => {
         this.tasks.update((tasks) =>
           tasks.map((t) => (t.id === updated.id ? updated : t)),
         );
-      });
+        this.successMessage.set(
+          `La tarea se actualizó correctamente.`,
+        );
+        setTimeout(() => {
+          this.successMessage.set('');
+        }, 3000);
+      },
+      error: () => {
+        checkbox.checked = task.completed;
+        this.errorMessage.set('Error al actualizar la tarea.');
+        setTimeout(() => {
+          this.errorMessage.set('');
+        }, 3000);
+      }
+    });
   }
 
   protected deleteTask(id: number): void {
-    this.taskService.delete(id).subscribe(() => {
-      this.tasks.update((tasks) =>
-        tasks.filter((t) => t.id !== id),
-      );
+    this.taskService.delete(id).subscribe({
+      next: ()=> {
+        this.tasks.update((tasks) =>
+          tasks.filter((t) => t.id !== id),
+        );
+        this.successMessage.set('La tarea se eliminó correctamente.');
+        setTimeout(() => {
+          this.successMessage.set('');
+        }, 3000);
+      },
+      error: () => {
+        this.errorMessage.set('Error al eliminar la tarea.');
+        
+        setTimeout(() => {
+          this.errorMessage.set('');
+        }, 3000);
+      }
     });
   }
 

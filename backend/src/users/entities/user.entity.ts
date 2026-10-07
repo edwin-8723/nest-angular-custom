@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Inversion } from '../../inversiones/entities/inversion.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -11,7 +10,4 @@ export class User {
 
   @Column()
   name: string;
-
-  @OneToMany(() => Inversion, (inversion) => inversion.user)
-  inversiones: Inversion[];
 }

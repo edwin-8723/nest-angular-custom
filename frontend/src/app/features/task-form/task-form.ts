@@ -15,6 +15,8 @@ export class TaskForm {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
+  protected readonly errorMessage = signal('');
+  protected readonly loadFailed = signal(false);
   protected readonly taskId = signal<number | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
@@ -27,11 +29,17 @@ export class TaskForm {
     if (idParam) {
       const id = Number(idParam);
       this.taskId.set(id);
-      this.taskService.getOne(id).subscribe((task) => {
-        this.form.patchValue({
-          title: task.title,
-          description: task.description ?? '',
-        });
+      this.taskService.getOne(id).subscribe({
+        next: (task) => {
+          this.form.patchValue({
+            title: task.title,
+            description: task.description ?? '',
+          });
+        },
+        error: () => {
+          this.loadFailed.set(true);
+          this.errorMessage.set('Error al cargar la tarea.');
+        },
       });
     }
   }
@@ -41,6 +49,8 @@ export class TaskForm {
       return;
     }
 
+    this.errorMessage.set('');
+
     const value = this.form.getRawValue();
     const id = this.taskId();
 
@@ -48,6 +58,11 @@ export class TaskForm {
       ? this.taskService.update(id, value)
       : this.taskService.create(value);
 
-    request$.subscribe(() => this.router.navigate(['/']));
+    request$.subscribe({
+      next: () => this.router.navigate(['/']),
+      error: () => {
+        this.errorMessage.set('Error al guardar la tarea.');
+      },
+    });
   }
 }

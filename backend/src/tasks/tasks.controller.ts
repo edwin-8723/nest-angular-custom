@@ -28,7 +28,7 @@ export class TasksController {
     return this.tasksService.findOne(id);
   }
 
-  @UseGuards(AuthGuard)
+ 
   @Post()
   create(@Body() createTaskDto: CreateTaskDto) {
     return this.tasksService.create(createTaskDto);
@@ -42,7 +42,7 @@ export class TasksController {
     return this.tasksService.update(id, updateTaskDto);
   }
 
-  @UseGuards(AuthGuard)
+
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.tasksService.remove(id);

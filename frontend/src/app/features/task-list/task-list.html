@@ -43,10 +43,11 @@
           <tr>
             <td>
               <input
+                #checkboxCompleted
                 class="form-check-input"
                 type="checkbox"
                 [checked]="task.completed"
-                (change)="toggleCompleted(task)"
+                (change)="toggleCompleted(task, checkboxCompleted)"
               />
             </td>
 
